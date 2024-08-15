@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,12 +16,19 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class Utils implements Listener {
-    private static SynkLibs core = SynkLibs.getInstance();
+    private static SynkLibs score = SynkLibs.getInstance();
+    private SynkLibs core = SynkLibs.getInstance();
+    Lang lang = new Lang(core);
     public static void log(String s) {
-        Bukkit.getConsoleSender().sendMessage(core.pluginPrefix+" "+s);
+        Bukkit.getConsoleSender().sendMessage(score.pluginPrefix+" "+s);
+    }
+    public void log(String s, Boolean prefix) {
+        if (prefix) s = core.pluginPrefix+" "+s;
+        Bukkit.getConsoleSender().sendMessage(s);
     }
 
-    public static void checkUpdate(String plugin, String ver, String download) {
+    public void checkUpdate(String plugin, String ver, String download) {
+        core.setPluginPrefix(core.prefix);
         try {
             URL url = new URL("https://synkdev.cc/ver/"+plugin);
             BufferedReader in = new BufferedReader(
@@ -28,10 +37,10 @@ public class Utils implements Listener {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.equals(ver)) {
-                    log(ChatColor.GREEN + Lang.translate("upToDate"));
+                    log(ChatColor.GREEN + plugin + " " + lang.translate("upToDate"));
                 } else {
-                    log(ChatColor.GREEN + Lang.translate("updateAvailable") + ": v" + inputLine);
-                    log(ChatColor.GREEN + Lang.translate("downloadHere") + ": "+download);
+                    log(ChatColor.GREEN + lang.translate("updateAvailable") + " " + plugin + ": v" + inputLine);
+                    log(ChatColor.GREEN + lang.translate("downloadHere") + ": "+download);
                     if (core.availableUpdates.containsKey(plugin)) core.availableUpdates.replace(plugin, ver);
                     else core.availableUpdates.put(plugin, ver);
                     if (core.updateLink.containsKey(plugin)) core.updateLink.replace(plugin, download);
@@ -49,8 +58,8 @@ public class Utils implements Listener {
     public void join (PlayerJoinEvent event) {
         if (((OfflinePlayer) event.getPlayer()).isOp()) core.availableUpdates.forEach((s, s2) -> {
             Player p = event.getPlayer();
-            core.log(Lang.translate("updateAvailable") + " "+s+"!");
-            core.log(Lang.translate("downloadHere")+": "+core.updateLink.get(s));
+            core.log(lang.translate("updateAvailable") + " "+s+"!");
+            core.log(lang.translate("downloadHere")+": "+core.updateLink.get(s));
         });
     }
 }

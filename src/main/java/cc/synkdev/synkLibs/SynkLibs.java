@@ -23,9 +23,10 @@ public final class SynkLibs extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        new Lang(this);
         new Metrics(this, 23015);
         Bukkit.getPluginManager().registerEvents(new Utils(), this);
-        Utils.checkUpdate("SynkLibs", "1.0", "https://modrinth.com/plugin/synklibs");
+        new Utils().checkUpdate("SynkLibs", "1.0", "https://modrinth.com/plugin/synklibs");
     }
 
     @Override
