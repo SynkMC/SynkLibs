@@ -1,5 +1,6 @@
 package cc.synkdev.synkLibs;
 
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -19,8 +20,9 @@ public class Utils implements Listener {
     private static SynkLibs score = SynkLibs.getInstance();
     private SynkLibs core = SynkLibs.getInstance();
     Lang lang = new Lang(core);
+    @Setter private static String pluginPrefix = null;
     public static void log(String s) {
-        Bukkit.getConsoleSender().sendMessage(score.pluginPrefix+" "+s);
+        Bukkit.getConsoleSender().sendMessage(pluginPrefix+" "+s);
     }
     public void log(String s, Boolean prefix) {
         if (prefix) s = core.pluginPrefix+" "+s;
