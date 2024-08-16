@@ -1,16 +1,13 @@
-package cc.synkdev.synkLibs;
+package cc.synkdev.synkLibs.bungee;
 
-import cc.synkdev.synkLibs.bungee.SynkLibsBungee;
+import cc.synkdev.synkLibs.Lang;
 import cc.synkdev.synkLibs.components.SynkPlugin;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.event.EventHandler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,26 +15,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class Utils implements Listener {
-    private static SynkLibs score = SynkLibs.getInstance();
-    private SynkLibs core = SynkLibs.getInstance();
+public class UtilsBungee implements Listener {
     private SynkLibsBungee bcore = SynkLibsBungee.getInstance();
+    private static SynkLibsBungee score = SynkLibsBungee.getInstance();
     SynkPlugin spl;
-    static Lang slang;
-    public Utils(SynkPlugin spl) {
+    static LangBungee slang;
+    public UtilsBungee(SynkPlugin spl) {
         this.spl = spl;
     }
     Lang lang;
     public static void log(String s) {
-        Bukkit.getConsoleSender().sendMessage(score.getSpl().prefix()+" "+s);
-    }
-    public void log(String s, Boolean prefix) {
-        if (prefix) s = core.prefix+" "+s;
-        Bukkit.getConsoleSender().sendMessage(s);
-    }
-
-    public static void checkUpdate(SynkPlugin spl, JavaPlugin plugin) {
-        checkUpdate(spl, plugin.getDataFolder());
+        score.getProxy().getConsole().sendMessage(score.getSpl().prefix()+" "+s);
     }
 
     public static void checkUpdate(SynkPlugin spl, Plugin plugin) {
@@ -45,7 +33,7 @@ public class Utils implements Listener {
     }
 
     private static void checkUpdate(SynkPlugin spl, File dataFolder) {
-        slang = new Lang(dataFolder);
+        slang = new LangBungee(dataFolder);
         try {
             URL url = new URL("https://synkdev.cc/ver/"+spl.name());
             BufferedReader in = new BufferedReader(
@@ -58,8 +46,8 @@ public class Utils implements Listener {
                 } else {
                     log(ChatColor.GREEN + slang.translate("updateAvailable") + " " + spl.name() + ": v" + inputLine);
                     log(ChatColor.GREEN + slang.translate("downloadHere") + ": "+spl.dlLink());
-                    if (SynkLibs.availableUpdates.containsKey(spl)) SynkLibs.availableUpdates.replace(spl, inputLine);
-                    else SynkLibs.availableUpdates.put(spl, inputLine);
+                    if (SynkLibsBungee.availableUpdates.containsKey(spl)) SynkLibsBungee.availableUpdates.replace(spl, inputLine);
+                    else SynkLibsBungee.availableUpdates.put(spl, inputLine);
                 }
                 break;
             }
@@ -69,11 +57,12 @@ public class Utils implements Listener {
         }
     }
 
+
     @EventHandler
-    public void join (PlayerJoinEvent event) {
-        lang = new Lang(core.getDataFolder());
-        if (((OfflinePlayer) event.getPlayer()).isOp()) core.availableUpdates.forEach((s, s2) -> {
-            Player p = event.getPlayer();
+    public void joinBungee (PostLoginEvent event) {
+        lang = new Lang(bcore.getDataFolder());
+        if (event.getPlayer().hasPermission("synklibs.bungee.updatenotifier")) bcore.availableUpdates.forEach((s, s2) -> {
+            ProxiedPlayer p = event.getPlayer();
             p.sendMessage(lang.translate("updateAvailable") + " "+s+"!");
             p.sendMessage(lang.translate("downloadHere")+": "+s.dlLink());
         });

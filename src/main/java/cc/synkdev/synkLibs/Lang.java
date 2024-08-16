@@ -2,23 +2,19 @@ package cc.synkdev.synkLibs;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Lang {
-    JavaPlugin plugin;
     public File file;
-    public Lang(JavaPlugin plugin) {
-        this.plugin = plugin;
-        file = new File(plugin.getDataFolder().getParentFile(), "SynkLibs");
+    SynkLibs core = SynkLibs.getInstance();
+    public Lang(File dataFolder) {
+        file = new File(dataFolder.getParent(), "SynkLibs");
         init();
     }
 
     public FileConfiguration config;
-    SynkLibs core = SynkLibs.getInstance();
 
     public void init() {
         if (!file.exists()) {

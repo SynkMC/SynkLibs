@@ -14,8 +14,8 @@ import java.util.Map;
 public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     @Getter private static SynkLibs instance;
     @Setter String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
-    @Setter @Getter SynkPlugin spl = null;
-    public Map<SynkPlugin, String> availableUpdates = new HashMap<>();
+    @Setter @Getter static SynkPlugin spl = null;
+    public static Map<SynkPlugin, String> availableUpdates = new HashMap<>();
     public void log(String s) {
         Bukkit.getConsoleSender().sendMessage(prefix+" "+s);
     }
@@ -24,10 +24,9 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     public void onEnable() {
         instance = this;
         setSpl(this);
-        new Lang(this);
         new Metrics(this, 23015);
         Bukkit.getPluginManager().registerEvents(new Utils(this), this);
-        new Utils(this).checkUpdate();
+        Utils.checkUpdate(this, this);
     }
 
     @Override
