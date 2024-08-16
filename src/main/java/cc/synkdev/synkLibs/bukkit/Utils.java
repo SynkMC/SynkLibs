@@ -1,8 +1,6 @@
-package cc.synkdev.synkLibs;
+package cc.synkdev.synkLibs.bukkit;
 
-import cc.synkdev.synkLibs.bungee.SynkLibsBungee;
 import cc.synkdev.synkLibs.components.SynkPlugin;
-import net.md_5.bungee.api.plugin.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +19,6 @@ import java.net.URL;
 public class Utils implements Listener {
     private static SynkLibs score = SynkLibs.getInstance();
     private SynkLibs core = SynkLibs.getInstance();
-    private SynkLibsBungee bcore = SynkLibsBungee.getInstance();
     SynkPlugin spl;
     static Lang slang;
     public Utils(SynkPlugin spl) {
@@ -37,10 +34,6 @@ public class Utils implements Listener {
     }
 
     public static void checkUpdate(SynkPlugin spl, JavaPlugin plugin) {
-        checkUpdate(spl, plugin.getDataFolder());
-    }
-
-    public static void checkUpdate(SynkPlugin spl, Plugin plugin) {
         checkUpdate(spl, plugin.getDataFolder());
     }
 

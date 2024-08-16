@@ -1,6 +1,5 @@
 package cc.synkdev.synkLibs.bungee;
 
-import cc.synkdev.synkLibs.Lang;
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -16,14 +15,14 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class UtilsBungee implements Listener {
-    private SynkLibsBungee bcore = SynkLibsBungee.getInstance();
-    private static SynkLibsBungee score = SynkLibsBungee.getInstance();
+    private final SynkLibsBungee bcore = SynkLibsBungee.getInstance();
+    private static final SynkLibsBungee score = SynkLibsBungee.getInstance();
     SynkPlugin spl;
     static LangBungee slang;
     public UtilsBungee(SynkPlugin spl) {
         this.spl = spl;
     }
-    Lang lang;
+    LangBungee lang;
     public static void log(String s) {
         score.getProxy().getConsole().sendMessage(score.getSpl().prefix()+" "+s);
     }
@@ -60,7 +59,7 @@ public class UtilsBungee implements Listener {
 
     @EventHandler
     public void joinBungee (PostLoginEvent event) {
-        lang = new Lang(bcore.getDataFolder());
+        lang = new LangBungee(bcore.getDataFolder());
         if (event.getPlayer().hasPermission("synklibs.bungee.updatenotifier")) bcore.availableUpdates.forEach((s, s2) -> {
             ProxiedPlayer p = event.getPlayer();
             p.sendMessage(lang.translate("updateAvailable") + " "+s+"!");

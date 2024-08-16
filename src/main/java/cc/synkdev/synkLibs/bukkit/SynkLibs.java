@@ -1,4 +1,4 @@
-package cc.synkdev.synkLibs;
+package cc.synkdev.synkLibs.bukkit;
 
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import lombok.Getter;

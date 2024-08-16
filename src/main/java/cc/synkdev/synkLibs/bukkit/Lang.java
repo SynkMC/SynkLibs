@@ -1,4 +1,4 @@
-package cc.synkdev.synkLibs;
+package cc.synkdev.synkLibs.bukkit;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
