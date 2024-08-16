@@ -6,7 +6,7 @@
 
     <groupId>cc.synkdev</groupId>
     <artifactId>SynkLibs</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>SynkLibs</name>
@@ -15,14 +15,6 @@
         <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>synkdev-repo-releases</id>
-            <name>SynkDev Repository</name>
-            <url>https://maven.synkdev.cc/releases</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

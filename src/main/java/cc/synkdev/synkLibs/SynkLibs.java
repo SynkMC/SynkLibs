@@ -1,5 +1,6 @@
 package cc.synkdev.synkLibs;
 
+import cc.synkdev.synkLibs.components.SynkPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
@@ -10,12 +11,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class SynkLibs extends JavaPlugin {
+public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     @Getter private static SynkLibs instance;
-    @Setter String pluginPrefix = null;
     @Setter String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
-    public Map<String, String> availableUpdates = new HashMap<>();
-    public Map<String, String> updateLink = new HashMap<>();
+    @Setter @Getter SynkPlugin spl = null;
+    public Map<SynkPlugin, String> availableUpdates = new HashMap<>();
     public void log(String s) {
         Bukkit.getConsoleSender().sendMessage(prefix+" "+s);
     }
@@ -23,14 +23,35 @@ public final class SynkLibs extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        setSpl(this);
         new Lang(this);
         new Metrics(this, 23015);
-        Bukkit.getPluginManager().registerEvents(new Utils(), this);
-        new Utils().checkUpdate("SynkLibs", "1.1", "https://modrinth.com/plugin/synklibs");
+        Bukkit.getPluginManager().registerEvents(new Utils(this), this);
+        new Utils(this).checkUpdate();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    @Override
+    public String name() {
+        return "SynkLibs";
+    }
+
+    @Override
+    public String ver() {
+        return "1.2";
+    }
+
+    @Override
+    public String dlLink() {
+        return "https://modrinth.com/plugin/synklibs";
+    }
+
+    @Override
+    public String prefix() {
+        return prefix;
     }
 }
