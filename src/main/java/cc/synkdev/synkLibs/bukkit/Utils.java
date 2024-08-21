@@ -4,16 +4,15 @@ import cc.synkdev.synkLibs.components.SynkPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 
 public class Utils implements Listener {
@@ -60,6 +59,53 @@ public class Utils implements Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static FileConfiguration loadWebConfig(String url, File file) {
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        File temp = new File(file.getParentFile(), "temp-"+System.currentTimeMillis()+".yml");
+        try {
+            URL uri = new URL(url);
+            if (!temp.exists()) temp.createNewFile();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(uri.openStream()));
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] lines = line.split("<br>");
+                for (String liness : lines) {
+                    String[] split = liness.split(";");
+                    if (split.length == 3) {
+                        if (!config.contains(split[1])) {
+                            writer.write("# " + split[0]);
+                            writer.newLine();
+                            writer.write(split[1] + ": " + split[2]);
+                            writer.newLine();
+                        } else {
+                            writer.write("# " + split[0]);
+                            writer.newLine();
+                            writer.write(split[1] + ": " + config.get(split[1]));
+                            writer.newLine();
+                        }
+                    } else {
+                        if (!config.contains(split[0])) {
+                            writer.write(split[0] + ": " + split[1]);
+                            writer.newLine();
+                        } else {
+                            writer.write(split[0] + ": " + config.get(split[0]));
+                            writer.newLine();
+                        }
+                    }
+                }
+            }
+
+            reader.close();
+            writer.close();
+            temp.renameTo(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return config;
     }
 
     @EventHandler
