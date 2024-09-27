@@ -111,10 +111,10 @@ public class Utils implements Listener {
     @EventHandler
     public void join (PlayerJoinEvent event) {
         lang = new Lang(core.getDataFolder());
-        if (((OfflinePlayer) event.getPlayer()).isOp()) core.availableUpdates.forEach((s, s2) -> {
+        if (((OfflinePlayer) event.getPlayer()).isOp()) SynkLibs.availableUpdates.forEach((s, s2) -> {
             Player p = event.getPlayer();
-            p.sendMessage(lang.translate("updateAvailable") + " "+s+"!");
-            p.sendMessage(lang.translate("downloadHere")+": "+s.dlLink());
+            p.sendMessage(core.prefix+ChatColor.GOLD+lang.translate("updateAvailable") + " "+s+"!");
+            p.sendMessage(core.prefix+ChatColor.GOLD+lang.translate("downloadHere")+": "+s.dlLink());
         });
     }
 }

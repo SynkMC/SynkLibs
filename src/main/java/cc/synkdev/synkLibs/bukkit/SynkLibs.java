@@ -1,6 +1,7 @@
 package cc.synkdev.synkLibs.bukkit;
 
 import cc.synkdev.synkLibs.components.SynkPlugin;
+import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
@@ -19,6 +20,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     public void log(String s) {
         Bukkit.getConsoleSender().sendMessage(prefix+" "+s);
     }
+    private PaperCommandManager pcm;
 
     @Override
     public void onEnable() {
@@ -27,6 +29,9 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         new Metrics(this, 23015);
         Bukkit.getPluginManager().registerEvents(new Utils(this), this);
         Utils.checkUpdate(this, this);
+
+        pcm = new PaperCommandManager(this);
+        pcm.registerCommand(new ReportCmd(this));
     }
 
     @Override
@@ -41,7 +46,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.3";
+        return "1.4";
     }
 
     @Override
