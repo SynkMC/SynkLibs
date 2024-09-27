@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,8 +22,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 @CommandAlias("slreport|sldump|synklibsreport|synklibsdump")
 public class ReportCmd extends BaseCommand {
@@ -81,68 +80,36 @@ public class ReportCmd extends BaseCommand {
     }
 
     private String getJsonString() {
-        String s = "{\n" +
-                "  \"serverVersion\": \""+ Bukkit.getServer().getVersion()+ "\",\n" +
-                "  \"serverSoftware\": \""+ Bukkit.getServer().getBukkitVersion()+ "\",\n" +
-                "  \"operatingSystem\": \""+ System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+ System.getProperty("os.arch")+ "\",\n" +
-                "  \"plugins\": [\n" +
-                pluginsString() +
-                "  ],\n" +
-                "  \"additionalInfo\": {\n" +
-                "    \"online-mode\": \""+Bukkit.getServer().getOnlineMode()+"\"\n" +
-                "  },\n" +
-                "  \"configs\": [\n" +
-                configsString() +
-                "  ],\n" +
-                "  }\n" +
-                "}\n";
-        return s;
-    }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("serverVersion", Bukkit.getServer().getVersion());
+        jsonObject.put("serverSoftware", Bukkit.getServer().getBukkitVersion());
+        jsonObject.put("operatingSystem", System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+        jsonObject.put("javaVersion", System.getProperty("java.version")+" "+ System.getProperty("java.vendor")+" "+System.getProperty("java.vm.name"));
 
-    private String pluginsString() {
-        List<String> list = new ArrayList<>();
+        JSONArray pluginsArray = new JSONArray();
         for (Plugin pl : Bukkit.getPluginManager().getPlugins()) {
-            list.add("{\n" +
-                    "      \"name\": \""+pl.getName()+"\",\n" +
-                            "      \"version\": \""+pl.getDescription().getVersion()+"\"\n" +
-                            "    }");
+            JSONObject pluginObject = new JSONObject();
+            pluginObject.put("name", pl.getName());
+            pluginObject.put("version", pl.getDescription().getVersion());
+            pluginsArray.put(pluginObject);
         }
+        jsonObject.put("plugins", pluginsArray);
 
-        if (list.size() == 1) {
-            return list.get(0);
-        }
-        StringBuilder sb = new StringBuilder();
-        int index=0;
-        for (int i = 0; i < list.size()-1; i++) {
-            sb.append(list.get(i)).append(", \n");
-            index = i;
-        }
-        sb.append(list.get(index+1));
-        return sb.toString();
-    }
-    private String configsString() {
-        List<String> list = new ArrayList<>();
+        JSONObject additionalInfo = new JSONObject();
+        additionalInfo.put("online-mode", Bukkit.getServer().getOnlineMode());
+        jsonObject.put("additionalInfo", additionalInfo);
+
+        JSONArray configsArray = new JSONArray();
         for (Plugin pl : Bukkit.getPluginManager().getPlugins()) {
             if (pl.getDescription().getAuthors().contains("Synk")) {
-
-                list.add("{\n" +
-                        "      \"name\": \""+pl.getName()+"\",\n" +
-                        "      \"config\": \""+pl.getConfig().saveToString()+"\"\n" +
-                        "    }");
+                JSONObject configObject = new JSONObject();
+                configObject.put("name", pl.getName());
+                configObject.put("config", pl.getConfig().saveToString());
+                configsArray.put(configObject);
             }
+        }
+        jsonObject.put("configs", configsArray);
 
-        }
-
-        if (list.size() == 1) {
-            return list.get(0);
-        }
-        StringBuilder sb = new StringBuilder();
-        int index=0;
-        for (int i = 0; i < list.size()-1; i++) {
-            sb.append(list.get(i)).append(", \n");
-            index = i;
-        }
-        sb.append(list.get(index+1));
-        return sb.toString();
+        return jsonObject.toString(2);
     }
 }
