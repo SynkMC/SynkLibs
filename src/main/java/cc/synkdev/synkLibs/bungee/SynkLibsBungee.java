@@ -37,7 +37,7 @@ public class SynkLibsBungee extends Plugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.4";
+        return "1.5";
     }
 
     @Override

@@ -46,7 +46,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.4.1";
+        return "1.5";
     }
 
     @Override

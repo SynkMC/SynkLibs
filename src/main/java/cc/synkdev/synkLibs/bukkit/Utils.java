@@ -101,11 +101,26 @@ public class Utils implements Listener {
 
             reader.close();
             writer.close();
-            temp.renameTo(file);
+
+            copyFile(temp, file);
+
+            temp.delete();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return config;
+    }
+
+    public static void copyFile(File source, File destination) throws IOException {
+        try (InputStream in = new FileInputStream(source);
+             OutputStream out = new FileOutputStream(destination)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+        }
     }
 
     @EventHandler
