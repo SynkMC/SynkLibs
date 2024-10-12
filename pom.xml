@@ -6,7 +6,7 @@
 
     <groupId>cc.synkdev</groupId>
     <artifactId>SynkLibs</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
     <packaging>jar</packaging>
 
     <name>SynkLibs</name>
@@ -71,6 +71,10 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -119,6 +123,12 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20210307</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.crowdin</groupId>
+            <artifactId>crowdin-api-client-java</artifactId>
+            <version>1.15.6</version>
         </dependency>
     </dependencies>
 </project>

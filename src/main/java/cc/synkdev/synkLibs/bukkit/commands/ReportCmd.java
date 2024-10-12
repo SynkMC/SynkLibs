@@ -1,5 +1,6 @@
-package cc.synkdev.synkLibs.bukkit;
+package cc.synkdev.synkLibs.bukkit.commands;
 
+import cc.synkdev.synkLibs.bukkit.SynkLibs;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
@@ -25,7 +26,7 @@ import java.net.URL;
 
 @CommandAlias("slreport|sldump|synklibsreport|synklibsdump")
 public class ReportCmd extends BaseCommand {
-    private SynkLibs core;
+    private final SynkLibs core;
     public ReportCmd(SynkLibs core) {
         this.core = core;
     }
@@ -34,6 +35,25 @@ public class ReportCmd extends BaseCommand {
     @CommandPermission("synklibs.report")
     @Description("Send informations about your server for support")
     public void onReport(CommandSender sender) {
+    String uuid = send();
+    if (uuid != null) {
+            TextComponent comp = new TextComponent(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n"+core.prefix()+ChatColor.GREEN+"Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD);
+            TextComponent uuidComp = new TextComponent(ChatColor.GOLD+uuid);
+            comp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, uuid));
+            comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Click to open it in chat to copy it")}));
+            comp.addExtra(uuidComp);
+
+            if (sender instanceof Player) {
+                ((Player) sender).spigot().sendMessage(comp);
+            } else {
+                sender.sendMessage(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n" + core.prefix() + ChatColor.GREEN + "Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD + uuid);
+            }
+        } else {
+            sender.sendMessage(core.prefix() + ChatColor.RED + "There was an error while uploading your report!");
+        }
+    }
+
+    public String send() {
         try {
             URL url = new URL("https://dump.synkdev.cc/upload");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -58,25 +78,13 @@ public class ReportCmd extends BaseCommand {
                 in.close();
 
                 org.json.JSONObject jsonResponse = new JSONObject(response.toString());
-                String uuid = jsonResponse.getString("uuid");
+                return jsonResponse.getString("uuid");
 
-                TextComponent comp = new TextComponent(core.prefix + ChatColor.GREEN + "Your report has been exported!\n"+core.prefix+ChatColor.GREEN+"Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD);
-                TextComponent uuidComp = new TextComponent(ChatColor.GOLD+uuid);
-                comp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, uuid));
-                comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Click to open it in chat to copy it")}));
-                comp.addExtra(uuidComp);
-
-                if (sender instanceof Player) {
-                    ((Player) sender).spigot().sendMessage(comp);
-                } else {
-                    sender.sendMessage(core.prefix + ChatColor.GREEN + "Your report has been exported!\n"+core.prefix+ChatColor.GREEN+"Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD+uuid);
-                }
-            } else {
-                sender.sendMessage(core.prefix + ChatColor.RED + "There was an error while uploading your report!");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     private String getJsonString() {

@@ -3,14 +3,12 @@ package cc.synkdev.synkLibs.bukkit;
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.net.URL;
@@ -19,25 +17,14 @@ public class Utils implements Listener {
     private static SynkLibs score = SynkLibs.getInstance();
     private SynkLibs core = SynkLibs.getInstance();
     SynkPlugin spl;
-    static Lang slang;
     public Utils(SynkPlugin spl) {
         this.spl = spl;
     }
-    Lang lang;
     public static void log(String s) {
         Bukkit.getConsoleSender().sendMessage(score.getSpl().prefix()+" "+s);
     }
-    public void log(String s, Boolean prefix) {
-        if (prefix) s = core.prefix+" "+s;
-        Bukkit.getConsoleSender().sendMessage(s);
-    }
 
-    public static void checkUpdate(SynkPlugin spl, JavaPlugin plugin) {
-        checkUpdate(spl, plugin.getDataFolder());
-    }
-
-    private static void checkUpdate(SynkPlugin spl, File dataFolder) {
-        slang = new Lang(dataFolder);
+    public static void checkUpdate(SynkPlugin spl) {
         try {
             URL url = new URL("https://synkdev.cc/ver/"+spl.name());
             BufferedReader in = new BufferedReader(
@@ -46,10 +33,10 @@ public class Utils implements Listener {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.equals(spl.ver())) {
-                    log(ChatColor.GREEN + spl.name() + " " + slang.translate("upToDate"));
+                    log(ChatColor.GREEN + spl.name() + " " + Lang.translate("upToDate", score));
                 } else {
-                    log(ChatColor.GREEN + slang.translate("updateAvailable") + " " + spl.name() + ": v" + inputLine);
-                    log(ChatColor.GREEN + slang.translate("downloadHere") + ": "+spl.dlLink());
+                    log(ChatColor.GREEN + Lang.translate("updateAvailable", score) + " " + spl.name() + ": v" + inputLine);
+                    log(ChatColor.GREEN + Lang.translate("downloadHere", score) + ": "+spl.dlLink());
                     if (SynkLibs.availableUpdates.containsKey(spl)) SynkLibs.availableUpdates.replace(spl, inputLine);
                     else SynkLibs.availableUpdates.put(spl, inputLine);
                 }
@@ -125,11 +112,10 @@ public class Utils implements Listener {
 
     @EventHandler
     public void join (PlayerJoinEvent event) {
-        lang = new Lang(core.getDataFolder());
-        if (((OfflinePlayer) event.getPlayer()).isOp()) SynkLibs.availableUpdates.forEach((s, s2) -> {
+        if (event.getPlayer().isOp()) SynkLibs.availableUpdates.forEach((s, s2) -> {
             Player p = event.getPlayer();
-            p.sendMessage(core.prefix+ChatColor.GOLD+lang.translate("updateAvailable") + " "+s+"!");
-            p.sendMessage(core.prefix+ChatColor.GOLD+lang.translate("downloadHere")+": "+s.dlLink());
+            p.sendMessage(core.prefix+ChatColor.GOLD+Lang.translate("updateAvailable", s) + " "+s+"!");
+            p.sendMessage(core.prefix+ChatColor.GOLD+Lang.translate("downloadHere", s)+": "+s.dlLink());
         });
     }
 }

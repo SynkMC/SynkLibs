@@ -15,6 +15,7 @@ public class SynkLibsBungee extends Plugin implements SynkPlugin {
     @Getter String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
     @Setter @Getter static SynkPlugin spl = null;
     static public Map<SynkPlugin, String> availableUpdates = new HashMap<>();
+    public static Map<String, String> langMap = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -48,5 +49,15 @@ public class SynkLibsBungee extends Plugin implements SynkPlugin {
     @Override
     public String prefix() {
         return getPrefix();
+    }
+
+    @Override
+    public String lang() {
+        return "en";
+    }
+
+    @Override
+    public Map<String, String> langMap() {
+        return langMap;
     }
 }
