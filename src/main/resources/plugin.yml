@@ -2,4 +2,4 @@ name: SynkLibs
 version: '${project.version}'
 main: cc.synkdev.synkLibs.bukkit.SynkLibs
 api-version: '1.13'
-authors: [ Synk, KingsMC ]
+authors: [ Synk ]

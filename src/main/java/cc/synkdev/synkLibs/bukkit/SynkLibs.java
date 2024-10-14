@@ -3,8 +3,9 @@ package cc.synkdev.synkLibs.bukkit;
 import cc.synkdev.synkLibs.bukkit.commands.ReportCmd;
 import cc.synkdev.synkLibs.bukkit.commands.SlCmd;
 import cc.synkdev.synkLibs.components.GlobalErrorHandler;
+import cc.synkdev.synkLibs.components.PluginUpdate;
 import cc.synkdev.synkLibs.components.SynkPlugin;
-import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.BukkitCommandManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
@@ -16,29 +17,40 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class SynkLibs extends JavaPlugin implements SynkPlugin {
-    @Getter private static SynkLibs instance;
-    @Setter String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
-    @Setter @Getter static SynkPlugin spl = null;
+    @Getter
+    private static SynkLibs instance;
+    @Setter
+    String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
+    @Setter
+    @Getter
+    static SynkPlugin spl = null;
     public static Map<SynkPlugin, String> availableUpdates = new HashMap<>();
     private final File configFile = new File(getDataFolder(), "config.yml");
     public FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
     public static String lang = "en";
-    private PaperCommandManager pcm;
-    @Getter @Setter private static Boolean loopReport = false;
+    private BukkitCommandManager pcm;
+    @Getter
+    @Setter
+    private static Boolean loopReport = false;
     public static Map<String, String> langMap = new HashMap<>();
+    public List<PluginUpdate> outdated = new ArrayList<>();
 
     @Override
     public void onEnable() {
         instance = this;
 
+        loadConfig();
+
         langMap.clear();
         langMap.putAll(Lang.init(this, new File(getDataFolder(), "lang.json")));
 
-        pcm = new PaperCommandManager(this);
+        pcm = new BukkitCommandManager(this);
         Thread.setDefaultUncaughtExceptionHandler(new GlobalErrorHandler("https://discord.com/api/webhooks/1294577862359257129/W7BssLiR8LpvfA7KeiAsBerXMHGvxB-1o0lKL70ly5RviPKwM4omvnXibqsKHkhsYAHW"));
         pcm.setDefaultExceptionHandler(new GlobalErrorHandler("https://discord.com/api/webhooks/1294577862359257129/W7BssLiR8LpvfA7KeiAsBerXMHGvxB-1o0lKL70ly5RviPKwM4omvnXibqsKHkhsYAHW"));
 
@@ -47,11 +59,12 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         Bukkit.getPluginManager().registerEvents(new Utils(this), this);
         Utils.checkUpdate(this);
 
-        pcm.enableUnstableAPI("help");
         pcm.registerCommand(new ReportCmd(this));
         pcm.registerCommand(new SlCmd(this));
 
-        loadConfig();
+        outdated.clear();
+        outdated.addAll(UpdateChecker.checkOutated());
+        if (!outdated.isEmpty()) UpdateChecker.update(outdated);
     }
 
     public void loadConfig() {
@@ -82,7 +95,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.6";
+        return "1.7";
     }
 
     @Override

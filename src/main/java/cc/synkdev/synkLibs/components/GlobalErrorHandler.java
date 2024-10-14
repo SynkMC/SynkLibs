@@ -55,8 +55,9 @@ public class GlobalErrorHandler implements Thread.UncaughtExceptionHandler, Exce
 
     @Override
     public boolean execute(BaseCommand command, RegisteredCommand registeredCommand, CommandIssuer sender, List<String> args, Throwable t) {
-        uncaughtException(null, t);
-        log = false;
-        return true;
+        if (!SynkLibs.getLoopReport()) sendWH(t);
+        if (log) logError(t);
+        log = true;
+        return false;
     }
 }
