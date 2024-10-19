@@ -2,6 +2,7 @@ package cc.synkdev.synkLibs.bukkit;
 
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import com.google.gson.Gson;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.*;
@@ -22,8 +23,7 @@ public class Lang {
 
     public static Map<String, String> init(SynkPlugin plugin, File langFile) {
         Map<String, String> map = new HashMap<>();
-        SynkLibs.getInstance().reloadConfig();
-        String globLang = SynkLibs.getInstance().getConfig().getString("lang");
+        String globLang = Bukkit.getPluginManager().getPlugin("SynkLibs").getConfig().getString("lang", "en");
         if (globLang.equalsIgnoreCase("custom")) {
             if (langFile.exists()) {
                 try {

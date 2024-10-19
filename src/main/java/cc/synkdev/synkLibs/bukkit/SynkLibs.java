@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class SynkLibs extends JavaPlugin implements SynkPlugin {
-    @Getter
-    private static SynkLibs instance;
+    @Getter private static SynkLibs instance;
     @Setter
     String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
     @Setter
@@ -42,9 +41,13 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     public List<PluginUpdate> outdated = new ArrayList<>();
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         instance = this;
+        setSpl(this);
+    }
 
+    @Override
+    public void onEnable() {
         loadConfig();
 
         langMap.clear();
@@ -72,7 +75,6 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
             if (!configFile.getParentFile().exists()) configFile.getParentFile().mkdirs();
             if (!configFile.exists()) {
                 configFile.createNewFile();
-                return;
             }
 
             config = YamlConfiguration.loadConfiguration(configFile);
@@ -95,7 +97,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.7";
+        return "1.7.1";
     }
 
     @Override
