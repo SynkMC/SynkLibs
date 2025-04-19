@@ -113,7 +113,7 @@ public class Lang {
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
             int responseCode = conn.getResponseCode();
-            return responseCode == HttpURLConnection.HTTP_OK;
+            return responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_FORBIDDEN;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

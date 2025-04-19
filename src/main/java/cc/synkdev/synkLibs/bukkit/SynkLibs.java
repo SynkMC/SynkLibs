@@ -9,6 +9,7 @@ import co.aikar.commands.BukkitCommandManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,11 +55,10 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         langMap.putAll(Lang.init(this, new File(getDataFolder(), "lang.json")));
 
         pcm = new BukkitCommandManager(this);
-        Thread.setDefaultUncaughtExceptionHandler(new GlobalErrorHandler("https://discord.com/api/webhooks/1294577862359257129/W7BssLiR8LpvfA7KeiAsBerXMHGvxB-1o0lKL70ly5RviPKwM4omvnXibqsKHkhsYAHW"));
-        pcm.setDefaultExceptionHandler(new GlobalErrorHandler("https://discord.com/api/webhooks/1294577862359257129/W7BssLiR8LpvfA7KeiAsBerXMHGvxB-1o0lKL70ly5RviPKwM4omvnXibqsKHkhsYAHW"));
 
         setSpl(this);
-        new Metrics(this, 23015);
+        Metrics metrics = new Metrics(this, 23015);
+        metrics.addCustomChart(new SimplePie("lang", () -> config.getString("lang", "en")));
         Bukkit.getPluginManager().registerEvents(new Utils(this), this);
         Utils.checkUpdate(this);
 
@@ -97,7 +97,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.7.1";
+        return "1.7.2";
     }
 
     @Override
