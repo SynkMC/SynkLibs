@@ -37,16 +37,16 @@ public class ReportCmd extends BaseCommand {
     public void onReport(CommandSender sender) {
     String uuid = send();
     if (uuid != null) {
-            TextComponent comp = new TextComponent(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n"+core.prefix()+ChatColor.GREEN+"Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD);
-            TextComponent uuidComp = new TextComponent(ChatColor.GOLD+uuid);
-            comp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, uuid));
-            comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Click to open it in chat to copy it")}));
+            TextComponent comp = new TextComponent(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n"+core.prefix()+ChatColor.GREEN+"Please save this link somewhere as it will be used by the support team: " + ChatColor.GOLD);
+            TextComponent uuidComp = new TextComponent(ChatColor.GOLD+"https://synkdev.cc/dump/"+uuid);
+            comp.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, uuid));
+            comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("Click to copy or open it")}));
             comp.addExtra(uuidComp);
 
             if (sender instanceof Player) {
                 ((Player) sender).spigot().sendMessage(comp);
             } else {
-                sender.sendMessage(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n" + core.prefix() + ChatColor.GREEN + "Please save this code somewhere as it will be used by the support team: " + ChatColor.GOLD + uuid);
+                sender.sendMessage(core.prefix() + ChatColor.GREEN + "Your report has been exported!\n" + core.prefix() + ChatColor.GREEN + "Please save this URL somewhere as it will be used by the support team: " + ChatColor.GOLD + "https://synkdev.cc/dump/"+uuid);
             }
         } else {
             sender.sendMessage(core.prefix() + ChatColor.RED + "There was an error while uploading your report!");

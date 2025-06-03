@@ -1,4 +1,0 @@
-name: SynkLibs
-version: '${project.version}'
-main: cc.synkdev.synkLibs.bungee.SynkLibsBungee
-author: Synk
