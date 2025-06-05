@@ -2,6 +2,7 @@ package cc.synkdev.synkLibs.bukkit;
 
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -128,11 +129,12 @@ public class Lang {
     }
     public static String translate(String key, SynkPlugin spl, String... placeholders) {
         String translatedString = ChatColor.translateAlternateColorCodes('&', spl.langMap().getOrDefault(key, "Invalid translation!"));
-
-        for (int i = 0; i < placeholders.length; i++) {
-            translatedString = translatedString.replace("%s" + (i + 1) + "%", placeholders[i]);
+        try {
+            for (int i = 0; i < placeholders.length; i++) {
+                translatedString = translatedString.replace("%s" + (i + 1) + "%", placeholders[i]);
+            }
+        } catch (Exception ignored) {
         }
-
         return translatedString;
     }
 

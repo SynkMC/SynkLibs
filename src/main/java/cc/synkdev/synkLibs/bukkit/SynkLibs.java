@@ -3,7 +3,6 @@ package cc.synkdev.synkLibs.bukkit;
 import cc.synkdev.synkLibs.bukkit.commands.ReportCmd;
 import cc.synkdev.synkLibs.bukkit.commands.SlCmd;
 import cc.synkdev.synkLibs.bukkit.objects.AnalyticsReport;
-import cc.synkdev.synkLibs.components.GlobalErrorHandler;
 import cc.synkdev.synkLibs.components.PluginUpdate;
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import co.aikar.commands.BukkitCommandManager;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     @Getter private static SynkLibs instance;
     @Setter String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6SynkLibs&8] » &r");
@@ -30,7 +30,6 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     private final File configFile = new File(getDataFolder(), "config.yml");
     public FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
     public static String lang = "en";
-    private BukkitCommandManager pcm;
     @Getter @Setter private static Boolean loopReport = false;
     public static Map<String, String> langMap = new HashMap<>();
     public List<PluginUpdate> outdated = new ArrayList<>();
@@ -53,7 +52,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         langMap.clear();
         langMap.putAll(Lang.init(this, new File(getDataFolder(), "lang.json")));
 
-        pcm = new BukkitCommandManager(this);
+        BukkitCommandManager pcm = new BukkitCommandManager(this);
 
         setSpl(this);
         Metrics metrics = new Metrics(this, 23015);
@@ -68,12 +67,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         outdated.addAll(UpdateChecker.checkOutated());
         if (!outdated.isEmpty()) UpdateChecker.update(outdated);
         if (doAnalytics) {
-            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
-                @Override
-                public void run() {
-                    Analytics.sendReport();
-                }
-            }, 0L, 5*60*20L);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, Analytics::sendReport, 0L, 5*60*20L);
         }
     }
 
@@ -103,7 +97,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
             doAnalytics = analyticsConfig.getBoolean("agree");
             String uuid = analyticsConfig.getString("uuid");
             UUID uid;
-            Boolean changed = false;
+            boolean changed = false;
             try {
                 uid = UUID.fromString(uuid);
             } catch (IllegalArgumentException e) {
@@ -122,7 +116,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public void onDisable() {
-        Analytics.sendReport();
+        Bukkit.getScheduler().runTaskAsynchronously(this, Analytics::sendReport);
     }
 
     @Override
@@ -132,7 +126,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.8";
+        return "1.8.1";
     }
 
     @Override
