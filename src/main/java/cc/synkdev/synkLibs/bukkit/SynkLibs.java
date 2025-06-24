@@ -116,7 +116,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, Analytics::sendReport);
+        Analytics.sendReport();
     }
 
     @Override
@@ -126,7 +126,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.8.1";
+        return "1.8.2";
     }
 
     @Override
