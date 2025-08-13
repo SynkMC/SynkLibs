@@ -94,4 +94,5 @@ public class UpdateChecker {
         }
         Utils.log(SynkLibs.getInstance().prefix+ ChatColor.GOLD+"New plugin versions have been downloaded! Restart your server for the changes to apply.");
     }
+
 }

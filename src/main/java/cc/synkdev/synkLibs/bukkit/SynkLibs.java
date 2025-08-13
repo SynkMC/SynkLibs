@@ -34,6 +34,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
     public static Map<String, String> langMap = new HashMap<>();
     public List<PluginUpdate> outdated = new ArrayList<>();
     public Boolean doAnalytics = true;
+    public Boolean doAutoUpdate = true;
     public UUID serverUUID;
     public AnalyticsReport report;
     public List<JavaPlugin> spls = new ArrayList<>();
@@ -65,7 +66,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
         outdated.clear();
         outdated.addAll(UpdateChecker.checkOutated());
-        if (!outdated.isEmpty()) UpdateChecker.update(outdated);
+        if (!outdated.isEmpty() && doAutoUpdate) UpdateChecker.update(outdated);
         if (doAnalytics) {
             Bukkit.getScheduler().runTaskTimerAsynchronously(this, Analytics::sendReport, 0L, 5*60*20L);
         }
@@ -81,6 +82,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
             config = YamlConfiguration.loadConfiguration(configFile);
             config = Utils.loadWebConfig("https://synkdev.cc/storage/config-libs.php", configFile);
             lang = config.getString("lang");
+            doAutoUpdate = config.getBoolean("autoupdate");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -126,7 +128,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.8.2";
+        return "1.8.3";
     }
 
     @Override
