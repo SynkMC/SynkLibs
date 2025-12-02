@@ -2,10 +2,12 @@ package cc.synkdev.synkLibs.bukkit;
 
 import cc.synkdev.synkLibs.components.SynkPlugin;
 import com.google.gson.Gson;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;

@@ -3,3 +3,15 @@ version: '${project.version}'
 main: cc.synkdev.synkLibs.bukkit.SynkLibs
 api-version: '1.13'
 authors: [ Synk ]
+permissions:
+  synklibs.report:
+    description: Send information dumps about your server
+    default: op
+  synklibs.command.reload:
+    description: Reload the plugin
+    default: op
+  synklibs.command.support:
+    description: Use the remote support feature
+    default: op
+softdepend:
+  - RemoteSupportNexus

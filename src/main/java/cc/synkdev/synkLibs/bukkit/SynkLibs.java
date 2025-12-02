@@ -64,9 +64,13 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
         pcm.registerCommand(new ReportCmd(this));
         pcm.registerCommand(new SlCmd(this));
 
-        outdated.clear();
-        outdated.addAll(UpdateChecker.checkOutated());
-        if (!outdated.isEmpty() && doAutoUpdate) UpdateChecker.update(outdated);
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            outdated.clear();
+            outdated.addAll(UpdateChecker.checkOutated());
+            if (!outdated.isEmpty() && doAutoUpdate) UpdateChecker.update(outdated);
+        }, 0L, 12000L);
+        
         if (doAnalytics) {
             Bukkit.getScheduler().runTaskTimerAsynchronously(this, Analytics::sendReport, 0L, 5*60*20L);
         }
@@ -128,7 +132,7 @@ public final class SynkLibs extends JavaPlugin implements SynkPlugin {
 
     @Override
     public String ver() {
-        return "1.8.3";
+        return "1.9";
     }
 
     @Override
